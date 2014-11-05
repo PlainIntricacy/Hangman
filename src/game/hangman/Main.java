@@ -1,11 +1,21 @@
+/**
+ * Text-based Hangman game.
+ * Given three difficulty options, the player must guess the randomly generated word.
+ * The maximum number of guesses available is twice the size of the generated word.
+ * Each difficulty increases the size of the generated word.
+ *
+ * Author: todyerutz@plainintricacy.wordpress.com
+ */
+
 package game.hangman;
 import java.util.ArrayList;
 import java.util.*;
 import java.io.*;
-import java.util.stream.StreamSupport;
 
 public class Main {
 
+    //"in" will be used to receive player input
+    //the local file enable1.txt will be used as the source for the generated words
     public static Scanner in = new Scanner(System.in);
     public static File dictionary = new File("C:/Users/Irukandji/code/Hangman/src/game/hangman/enable1.txt");
 
@@ -15,7 +25,8 @@ public class Main {
 
         System.out.println("Welcome to Hangman!");
         System.out.println();
-
+        //Main Menu loop
+        //will loop until the player enters a valid option - 0,1,2 or 3
         do {
             System.out.println("Please choose a difficulty level:");
             System.out.println("1 = Easy: 5 letter word, 10 chances.");
@@ -24,7 +35,8 @@ public class Main {
             System.out.println("0 = Exit Game");
             menu_input = in.nextInt();
         }while (menu_input<0||menu_input>3);
-
+        //runs the game at the appropriate difficulty, based on the player's input
+        //exits the game if option 0 is chosen
         switch (menu_input){
             case 0:
                 System.out.println("Thank you for playing Hangman!");
