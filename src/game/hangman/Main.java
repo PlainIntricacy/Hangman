@@ -2,6 +2,7 @@ package game.hangman;
 import java.util.ArrayList;
 import java.util.*;
 import java.io.*;
+import java.util.stream.StreamSupport;
 
 public class Main {
 
@@ -45,6 +46,7 @@ public class Main {
     }
 
     public static void runGame(int diff) throws IOException {
+        //builds an arraylist of words based on the given difficulty (diff variable)
         BufferedReader dictreader = new BufferedReader(new FileReader(dictionary));
         ArrayList<String> WordList = new ArrayList<String>();
         String wordreader = dictreader.readLine();
@@ -54,33 +56,39 @@ public class Main {
             }
             wordreader=dictreader.readLine();
         }
+        //extracts a random word as the answer from the previously formed arraylist of eligible words
         Random rnd = new Random();
         String answer = WordList.get(rnd.nextInt(WordList.size())).toLowerCase();
-        //StringBuilder pass = new StringBuilder(answer.replaceAll(".","*"));
-        String pass = new String();
+        //builds the word to be displayed and updated during the game
+        char[] pass = new char[diff];
         for(int i=0; i<answer.length(); i++){
-            pass+="*";
+            pass[i]='*';
         }
+        //variable currG will count the number of guesses the player has made
         int currG = 0;
         String listG = "";
-        //char input;
+        //do-while loop of the game information to be displayed to the player
         do{
             System.out.println();
-            System.out.println("Actual word: " + answer);
-            System.out.println("Word: " + pass);
+            //System.out.println("Actual word: " + answer);     //For testing purposes
+            System.out.println("Word: " + new String(pass));
             System.out.println("Guesses (" + currG + "/" + diff*2 + "): " + listG);
             System.out.println("HINT: The word contains " + getHint(answer) + " vowels!");
             System.out.println();
             System.out.println("Please enter your guess (one letter):");
+            //searches for the player's guess in the answer String
+            //if the guess is correct, the pass variable is updated accordingly
             char input = in.next().charAt(0);
+            //found is used to verify if the player's guess was correct
             boolean found = false;
             for(int i=0; i<answer.length(); i++){
                 if(answer.charAt(i)==input){
-                    pass.replace(pass.charAt(i), input);
+                    pass[i] = input;
                     found = true;
                 }
             }
             listG += input + " ";
+            //based on the value of found, the player is informed on whether their guess was correct
             if(found){
                 System.out.println();
                 System.out.println("Your guess, " + input + ", was found!");
@@ -89,16 +97,22 @@ public class Main {
                 System.out.println("Your guess, " + input + ", was not found.");
             }
             currG++;
-        }while((currG<diff*2) || !pass.equals(answer));
-        if(pass.equals(answer)){
-            System.out.println("Congratulations! You found the word.");
+        //loop the game until the player finds the answer or they run out of guesses
+        }while(currG<diff*2 && !new String(pass).equals(answer));
+        //appropriate messages to the player based on the result of the game:
+        //either they found the answer or they ran out of guesses
+        if(new String(pass).equals(answer)){
+            System.out.println();
+            System.out.println("Congratulations! You found the word - " + answer + " - in " + currG + " guesses.");
         }else{
+            System.out.println();
             System.out.println("Sorry, you did not find the word.");
             System.out.println("The correct answer was: " + answer);
         }
         dictreader.close();
     }
-
+    //calculates the number of vowels the answer contains
+    //used as a hint for the player
     public static int getHint(String q){
         q=q.toLowerCase();
         int num = 0;
@@ -109,12 +123,4 @@ public class Main {
         }
         return num;
     }
-
-    /*public static String buildpass(String x){
-        String result = "";
-        for(int i=0; i<x.length(); i++){
-            result+="*";
-        }
-        return result;
-    }*/
 }
