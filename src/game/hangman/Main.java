@@ -11,17 +11,15 @@ public class Main {
     public static void main(String[] args) throws IOException {
 
         int menu_input;
-        String endinput;
 
-        l1:
         System.out.println("Welcome to Hangman!");
         System.out.println();
 
         do {
             System.out.println("Please choose a difficulty level:");
-            System.out.println("1 = Easy: 5 letter word, 5 chances.");
-            System.out.println("2 = Medium: 7 letter word, 7 chances.");
-            System.out.println("3 = Hard: 10 letter word, 10 chances.");
+            System.out.println("1 = Easy: 5 letter word, 10 chances.");
+            System.out.println("2 = Medium: 7 letter word, 14 chances.");
+            System.out.println("3 = Hard: 10 letter word, 20 chances.");
             System.out.println("0 = Exit Game");
             menu_input = in.nextInt();
         }while (menu_input<0||menu_input>3);
@@ -58,22 +56,27 @@ public class Main {
         }
         Random rnd = new Random();
         String answer = WordList.get(rnd.nextInt(WordList.size())).toLowerCase();
-        StringBuilder pass = new StringBuilder(answer.replaceAll(".","*"));
+        //StringBuilder pass = new StringBuilder(answer.replaceAll(".","*"));
+        String pass = new String();
+        for(int i=0; i<answer.length(); i++){
+            pass+="*";
+        }
         int currG = 0;
         String listG = "";
-        char input;
+        //char input;
         do{
             System.out.println();
+            System.out.println("Actual word: " + answer);
             System.out.println("Word: " + pass);
-            System.out.println("Guesses (" + currG + "/" + diff + "): " + listG);
+            System.out.println("Guesses (" + currG + "/" + diff*2 + "): " + listG);
             System.out.println("HINT: The word contains " + getHint(answer) + " vowels!");
             System.out.println();
             System.out.println("Please enter your guess (one letter):");
-            input = in.next().charAt(0);
+            char input = in.next().charAt(0);
             boolean found = false;
             for(int i=0; i<answer.length(); i++){
                 if(answer.charAt(i)==input){
-                    pass.setCharAt(i, input);
+                    pass.replace(pass.charAt(i), input);
                     found = true;
                 }
             }
@@ -86,7 +89,7 @@ public class Main {
                 System.out.println("Your guess, " + input + ", was not found.");
             }
             currG++;
-        }while((currG<diff)|| !pass.equals(answer));
+        }while((currG<diff*2) || !pass.equals(answer));
         if(pass.equals(answer)){
             System.out.println("Congratulations! You found the word.");
         }else{
